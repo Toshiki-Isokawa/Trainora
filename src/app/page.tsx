@@ -11,6 +11,9 @@ type UserProfileResponse = {
     summary: {
       recommendedCalories: number;
     };
+    profile?: {
+      signedImageUrl?: string | null;
+    };
   };
   latestWeight: {
     weight: number;
@@ -58,6 +61,7 @@ export default function Home() {
       if (!res.ok) return;
 
       const data = await res.json();
+      console.log("Fetched profile:", data);
       setProfile(data);
       setLoading(false);
     };
@@ -127,23 +131,51 @@ export default function Home() {
   // ============================
   const welcome = "おかえりなさい、" + (profile?.user.name ?? "") + "さん！";
 
+  const GOAL_LABELS: Record<string, string> = {
+    gain_muscle: "筋肉量を増やしたい",
+    gain_both: "体重と筋肉量を増やしたい",
+    healthy_body: "健康的な身体を作りたい",
+    lose_fat: "体脂肪を落としたい",
+  };
+
   return (
     <main className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold">{welcome}</h1>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          {/* Profile Image */}
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+            {profile?.user.profile?.signedImageUrl? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={profile.user.profile.signedImageUrl}
+                alt="プロフィール画像"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-sm text-gray-400">No Image</span>
+            )}
+          </div>
 
-      <button
-        onClick={handleLogout}
-        className="text-sm text-gray-600 hover:text-gray-900"
-      >
-        ログアウト
-      </button>
+          {/* Welcome */}
+          <h1 className="text-xl font-bold">{welcome}</h1>
+        </div>
 
-      <div className="mt-6 space-y-4">
+        <button
+          onClick={handleLogout}
+          className="text-sm text-gray-600 hover:text-gray-900"
+        >
+          ログアウト
+        </button>
+      </div>
+
+      {/* Cards */}
+      <div className="space-y-4">
         <div className="p-4 border rounded-lg">
           <p className="text-sm text-gray-500">現在の目標</p>
           <p className="font-semibold">
-            {profile?.user.goal.goalType === "gain_muscle"
-              ? "筋肉を増やす"
+            {profile?.user.goal.goalType
+              ? GOAL_LABELS[profile.user.goal.goalType] ?? "未設定"
               : "未設定"}
           </p>
         </div>

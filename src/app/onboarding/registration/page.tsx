@@ -5,16 +5,6 @@ import { useRouter } from "next/navigation";
 
 /**
  * Step1: Personal Info
- *
- * Behavior:
- * - Saves draft to localStorage ("onboarding:profile:draft")
- * - Attempts to upload profile image if user chooses one:
- *    -> fetch presigned url from /api/upload-url (PUT)
- *    -> if upload succeeds, set profileImageUrl
- * - POST draft to /api/onboarding/profile when user clicks "次へ"
- *
- * Note: backend endpoints (/api/upload-url, /api/onboarding/profile) are placeholders
- * and should be implemented server-side to interact with S3 / DynamoDB / Lambda.
  */
 
 type DraftProfile = {
@@ -25,7 +15,7 @@ type DraftProfile = {
   weight: string; // kg as string
   bodyFat?: string;
   muscleMass?: string;
-  profileImageUrl?: string;
+  imageKey?: string;
   tempSaved?: boolean;
 };
 
@@ -42,7 +32,7 @@ export default function Step1() {
     weight: "",
     bodyFat: "",
     muscleMass: "",
-    profileImageUrl: "",
+    imageKey: "",
     tempSaved: true,
   });
 
@@ -57,7 +47,7 @@ export default function Step1() {
       try {
         const parsed = JSON.parse(saved) as DraftProfile;
         setDraft((d) => ({ ...d, ...parsed }));
-        if (parsed.profileImageUrl) setImagePreview(parsed.profileImageUrl);
+        if (parsed.imageKey) setImagePreview(parsed.imageKey);
       } catch (e) {
         console.warn("invalid draft", e);
       }
@@ -65,14 +55,15 @@ export default function Step1() {
   }, []);
 
   useEffect(() => {
-    // preview selected file
-    if (!imageFile) return setImagePreview(draft.profileImageUrl || null);
+    if (!imageFile) return;
+
     const reader = new FileReader();
     reader.onload = () => {
       setImagePreview(String(reader.result));
     };
     reader.readAsDataURL(imageFile);
-  }, [imageFile, draft.profileImageUrl]);
+  }, [imageFile]);
+
 
   const update = (patch: Partial<DraftProfile>) => {
     setDraft((d) => {
@@ -91,39 +82,27 @@ export default function Step1() {
     return null;
   };
 
-  const uploadImageIfNeeded = async (): Promise<string | null> => {
-    if (!imageFile) return draft.profileImageUrl || null;
-    try {
-      // request presigned url from backend
-      const resp = await fetch("/api/upload-url", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ filename: imageFile.name, contentType: imageFile.type }),
-      });
-      if (!resp.ok) {
-        console.warn("Presign URL failed", resp.status);
-        return null;
-      }
-      const { url, key } = await resp.json(); // { url: "...", key: "s3-key" }
-      // upload to s3
-      const put = await fetch(url, {
-        method: "PUT",
-        headers: { "Content-Type": imageFile.type },
-        body: imageFile,
-      });
-      if (!put.ok) {
-        console.warn("S3 upload failed", put.status);
-        return null;
-      }
-      // derive public url or return key to be stored
-      // backend should return the accessible URL or we can form it if public.
-      const publicUrl = key; // change per backend contract. Prefer backend return.
-      return publicUrl;
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+  const uploadImage = async (file: File) => {
+    const res = await fetch("/api/upload-url", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+      }),
+    });
+
+    const { url, key } = await res.json();
+
+    await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+
+    return key;
   };
+
 
   const handleNext = async () => {
     setError(null);
@@ -134,16 +113,18 @@ export default function Step1() {
     }
     setLoading(true);
     try {
-      // upload image
-      const uploadedUrl = await uploadImageIfNeeded();
+      let imageKey: string | undefined = draft.imageKey;
+
+      if (imageFile) {
+        imageKey = await uploadImage(imageFile);
+        update({ imageKey });
+      }
+
       const payload = {
         ...draft,
-        profileImageUrl: uploadedUrl || draft.profileImageUrl || "",
-        tempSaved: false,
+        imageKey,
       };
-
-      // clear local draft or mark completed
-      //localStorage.removeItem(LOCAL_KEY);
+      console.log("NEXT PAYLOAD", payload);
       // navigate to next step
       router.push("/onboarding/activity");
     } catch (e: any) {

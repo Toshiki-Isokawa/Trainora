@@ -53,7 +53,7 @@ export default function SummaryPage() {
                 weight: reg.weight,
                 birthDate: reg.birthDate,
                 gender: reg.gender,
-                imageBase64: reg.imageBase64 ?? null,
+                imageKey: reg.imageKey ?? null,
             },
 
             activity: {
