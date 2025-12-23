@@ -72,6 +72,7 @@ export default function GoalStep() {
       const payload = { ...draft, tempSaved: false };
 
       // Placeholder API
+      /*
       const res = await fetch("/api/onboarding/goal", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -83,7 +84,7 @@ export default function GoalStep() {
         throw new Error(msg || "保存に失敗しました");
       }
 
-      localStorage.removeItem(LOCAL_KEY);
+      localStorage.removeItem(LOCAL_KEY);*/
       router.push("/onboarding/summary");
     } catch (e: any) {
       setError(e.message || "保存に失敗しました");

@@ -142,20 +142,8 @@ export default function Step1() {
         tempSaved: false,
       };
 
-      // TODO: Replace with your actual API endpoint (Lambda/API Gateway)
-      const res = await fetch("/api/onboarding/profile", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || "保存に失敗しました");
-      }
-
       // clear local draft or mark completed
-      localStorage.removeItem(LOCAL_KEY);
+      //localStorage.removeItem(LOCAL_KEY);
       // navigate to next step
       router.push("/onboarding/activity");
     } catch (e: any) {

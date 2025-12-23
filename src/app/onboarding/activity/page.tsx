@@ -71,6 +71,7 @@ export default function ActivityStep() {
       const payload = { ...draft, tempSaved: false };
 
       // Placeholder API - replace with your API Gateway/Lambda endpoint
+      /* 
       const res = await fetch("/api/onboarding/activity", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -83,7 +84,7 @@ export default function ActivityStep() {
       }
 
       // on success, clear local draft (or keep depending on flow)
-      localStorage.removeItem(LOCAL_KEY);
+      localStorage.removeItem(LOCAL_KEY);*/
       router.push("/onboarding/goal");
     } catch (e: any) {
       console.error(e);
