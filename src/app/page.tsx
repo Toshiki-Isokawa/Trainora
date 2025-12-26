@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import WeightChart from "@/app/components/WeightChart";
 
 type UserProfileResponse = {
   user: {
@@ -20,6 +21,13 @@ type UserProfileResponse = {
   } | null;
 };
 
+type WeightItem = {
+  date: string;
+  weight: number;
+};
+
+type Range = "7d" | "30d" | "90d" | "all";
+
 export default function Home() {
   const { data: session, status } = useSession();
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
@@ -32,9 +40,14 @@ export default function Home() {
   >(null);
   const [weightMessage, setWeightMessage] = useState<string | null>(null);
   const [submittingWeight, setSubmittingWeight] = useState(false);
+  const [weightHistory, setWeightHistory] = useState<WeightItem[]>([]);
+  const [loadingWeight, setLoadingWeight] = useState(false);
+  const [weightError, setWeightError] = useState<string | null>(null);
+  const [range, setRange] = useState<Range>("7d");
 
   // env 
   const redirectAfter = process.env.NEXT_PUBLIC_POST_LOGIN_REDIRECT ?? "/";
+  const userId = session?.user.userId;
 
   const handleLogout = async () => {
     if (confirm("ログアウトしますか？")) {
@@ -62,8 +75,6 @@ export default function Home() {
     }
 
     const fetchProfile = async () => {
-      const userId = (session.user as any).userId;
-
       const res = await fetch(`/api/user/profile?userId=${userId}`);
       if (!res.ok) return;
 
@@ -83,8 +94,35 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const fetchWeight = async () => {
+      setLoadingWeight(true);
+      setWeightError(null);
+
+      try {
+        const res = await fetch(
+          `/api/weight/receive?userId=${userId}`
+        );
+
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(msg);
+        }
+
+        const data = await res.json();
+        setWeightHistory(data.items);
+      } catch (e: any) {
+        console.error(e);
+        setWeightError("体重履歴の取得に失敗しました");
+      } finally {
+        setLoadingWeight(false);
+      }
+    };
+
+    fetchWeight();
+  }, []);
+
   const submitDailyWeight = async () => {
-    const userId = (session.user as any).userId;
     if (!weightInput || isNaN(Number(weightInput))) {
       setWeightStatus("error");
       setWeightMessage("正しい体重を入力してください");
@@ -252,6 +290,12 @@ export default function Home() {
             {profile?.user.summary.recommendedCalories} kcal / 日
           </p>
         </div>
+      </div>
+
+      <div className="mt-6">
+        {loadingWeight && <p className="text-sm text-gray-500">読み込み中...</p>}
+        {weightError && <p className="text-sm text-red-500">{weightError}</p>}
+        <WeightChart data={weightHistory} />
       </div>
       
       <div className="space-y-4">
