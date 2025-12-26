@@ -113,49 +113,49 @@ export default function SummaryPage() {
     }
 
     if (error || !result) {
-    return (
-        <div className="max-w-xl mx-auto p-6">
-        <h2 className="text-xl font-bold text-red-600 mb-3">エラー</h2>
-        <p className="mb-4">{error ?? "不明なエラーです。"}</p>
-        <button
-            onClick={() => router.push("/onboarding/registration")}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-            はじめからやり直す
-        </button>
-        </div>
-    );
+        return (
+            <div className="max-w-xl mx-auto p-6">
+            <h2 className="text-xl font-bold text-red-600 mb-3">エラー</h2>
+            <p className="mb-4">{error ?? "不明なエラーです。"}</p>
+            <button
+                onClick={() => router.push("/onboarding/registration")}
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+                はじめからやり直す
+            </button>
+            </div>
+        );
     }
 
     return (
-    <div className="max-w-xl mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-6">目標に基づく推定カロリー</h2>
+        <div className="max-w-xl mx-auto p-6">
+            <h2 className="text-2xl font-bold mb-6">目標に基づく推定カロリー</h2>
 
-        <div className="bg-white shadow p-6 rounded-xl space-y-4 border">
-        <div>
-            <p className="text-gray-600">基礎代謝量 (BMR)</p>
-            <p className="text-xl font-semibold">{result.summary.bmr} kcal</p>
-        </div>
+            <div className="bg-white shadow p-6 rounded-xl space-y-4 border">
+            <div>
+                <p className="text-gray-600">基礎代謝量 (BMR)</p>
+                <p className="text-xl font-semibold">{result.summary.bmr} kcal</p>
+            </div>
 
-        <div>
-            <p className="text-gray-600">1日の消費カロリー (TDEE)</p>
-            <p className="text-xl font-semibold">{result.summary.tdee} kcal</p>
-        </div>
+            <div>
+                <p className="text-gray-600">1日の消費カロリー (TDEE)</p>
+                <p className="text-xl font-semibold">{result.summary.tdee} kcal</p>
+            </div>
 
-        <div className="border-t pt-4">
-            <p className="text-gray-600">あなたの目標に合わせた推奨摂取カロリー</p>
-            <p className="text-2xl font-bold text-blue-600">
-            {result.summary.recommendedCalories} kcal
-            </p>
-        </div>
-        </div>
+            <div className="border-t pt-4">
+                <p className="text-gray-600">あなたの目標に合わせた推奨摂取カロリー</p>
+                <p className="text-2xl font-bold text-blue-600">
+                {result.summary.recommendedCalories} kcal
+                </p>
+            </div>
+            </div>
 
-        <button
-        onClick={handleFinish}
-        className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 text-lg"
-        >
-        完了してホームへ
-        </button>
-    </div>
+            <button
+            onClick={handleFinish}
+            className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 text-lg"
+            >
+            完了してホームへ
+            </button>
+        </div>
     );
 }
