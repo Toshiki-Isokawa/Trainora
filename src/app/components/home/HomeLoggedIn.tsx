@@ -5,6 +5,9 @@ import HomeHeader from "./HomeHeader";
 import HomeSummaryCards from "./HomeSummaryCards";
 import WeightSection from "./WeightSection";
 import WeightRecordCard from "./WeightRecordCard";
+import WorkoutCalendar from "../workout/WorkoutCalendar";
+
+type TabType = "weight" | "workout";
 
 export default function HomeLoggedIn({ session }: any) {
   const userId = session.user.userId;
@@ -12,6 +15,8 @@ export default function HomeLoggedIn({ session }: any) {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [weightHistory, setWeightHistory] = useState([]);
+  const [activeTab, setActiveTab] = useState<TabType>("weight");
+
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -39,8 +44,44 @@ export default function HomeLoggedIn({ session }: any) {
     <main className="max-w-xl mx-auto p-6 space-y-6">
       <HomeHeader profile={profile} />
       <HomeSummaryCards profile={profile} />
-      <WeightSection weightHistory={weightHistory} />
-      <WeightRecordCard userId={userId} />
+      
+      {/* Tabs */}
+      <div className="flex bg-gray-100 rounded-xl p-1">
+        <button
+          onClick={() => setActiveTab("weight")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition
+            ${
+              activeTab === "weight"
+                ? "bg-white shadow text-gray-900"
+                : "text-gray-500"
+            }`}
+        >
+          体重
+        </button>
+        <button
+          onClick={() => setActiveTab("workout")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition
+            ${
+              activeTab === "workout"
+                ? "bg-white shadow text-gray-900"
+                : "text-gray-500"
+            }`}
+        >
+          トレーニング
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "weight" && (
+        <>
+          <WeightSection weightHistory={weightHistory} />
+          <WeightRecordCard userId={userId} />
+        </>
+      )}
+
+      {activeTab === "workout" && (
+        <WorkoutCalendar userId={userId} />
+      )}
     </main>
   );
 }

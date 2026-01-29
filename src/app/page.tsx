@@ -12,9 +12,18 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!session) {
+      setShowSplash(true);
+
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowSplash(false);
+    }
+  }, [session]);
 
   if (showSplash) {
     return (
