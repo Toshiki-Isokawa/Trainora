@@ -7,29 +7,31 @@ const GOAL_LABELS: Record<string, string> = {
 
 export default function HomeSummaryCards({ profile }: any) {
   return (
-    <div className="space-y-4">
-      <Card label="現在の目標">
+    <div className="grid grid-cols-1 gap-3">
+      <SummaryCard label="現在の目標">
         {GOAL_LABELS[profile?.user.goal.goalType] ?? "未設定"}
-      </Card>
+      </SummaryCard>
 
-      <Card label="最新の体重">
+      <SummaryCard label="最新の体重">
         {profile?.latestWeight
           ? `${profile.latestWeight.weight} kg`
           : "未登録"}
-      </Card>
+      </SummaryCard>
 
-      <Card label="推奨摂取カロリー">
+      <SummaryCard label="推奨摂取カロリー">
         {profile?.user.summary.recommendedCalories} kcal / 日
-      </Card>
+      </SummaryCard>
     </div>
   );
 }
 
-function Card({ label, children }: any) {
+function SummaryCard({ label, children }: any) {
   return (
-    <div className="p-4 border rounded-lg">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="font-semibold">{children}</p>
+    <div className="rounded-xl border bg-white px-4 py-3 shadow-sm">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="mt-1 text-lg font-semibold text-gray-900">
+        {children}
+      </p>
     </div>
   );
 }

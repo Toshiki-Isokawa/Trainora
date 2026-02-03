@@ -47,11 +47,6 @@ export default function ActivityCreate() {
     router.push("/onboarding/registration");
   };
 
-  const handleSaveDraft = () => {
-    update({ tempSaved: true });
-    setError(null);
-  };
-
   const handleNext = () => {
     setError(null);
     const v = validate();
@@ -61,8 +56,6 @@ export default function ActivityCreate() {
     }
 
     setLoading(true);
-
-    // ✅ ONLY save to localStorage & move forward
     update({ tempSaved: false });
     router.push("/onboarding/goal");
   };
@@ -79,28 +72,40 @@ export default function ActivityCreate() {
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-2 rounded-lg border ${
-        active ? "border-blue-600 bg-blue-50" : "border-gray-200 bg-white"
-      }`}
+      className={`rounded-xl border px-4 py-3 text-sm font-medium transition
+        ${
+          active
+            ? "border-black bg-black text-white"
+            : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+        }`}
     >
       {children}
     </button>
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">日々の活動について</h2>
+    <main className="max-w-xl mx-auto px-4 py-6 space-y-8">
+      {/* Title */}
+      <header className="space-y-1">
+        <h2 className="text-xl font-semibold">日々の活動について</h2>
+        <p className="text-sm text-gray-500">
+          日常の活動量を教えてください
+        </p>
+      </header>
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
+        <div className="rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800">
           {error}
         </div>
       )}
 
       {/* Work style */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">仕事タイプ</label>
-        <div className="flex gap-3">
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
+          仕事タイプ
+        </label>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <OptionButton
             active={draft.workStyle === "standing"}
             onClick={() => update({ workStyle: "standing" })}
@@ -117,11 +122,11 @@ export default function ActivityCreate() {
       </section>
 
       {/* High intensity */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
           高強度の運動頻度（筋トレなど）
         </label>
-        <div className="flex gap-3 flex-wrap">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <OptionButton
             active={draft.highIntensity === "1-2"}
             onClick={() => update({ highIntensity: "1-2" })}
@@ -144,11 +149,11 @@ export default function ActivityCreate() {
       </section>
 
       {/* Low intensity */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
           低強度の運動頻度（散歩など）
         </label>
-        <div className="flex gap-3 flex-wrap">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <OptionButton
             active={draft.lowIntensity === "1-2"}
             onClick={() => update({ lowIntensity: "1-2" })}
@@ -170,31 +175,24 @@ export default function ActivityCreate() {
         </div>
       </section>
 
-      <div className="flex gap-3 mt-6">
+      {/* Actions */}
+      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
         <button
           onClick={handleBack}
-          className="px-4 py-2 bg-white border rounded"
           disabled={loading}
+          className="w-full rounded-xl border py-3 text-sm font-medium sm:w-auto sm:px-5"
         >
           戻る
         </button>
 
         <button
-          onClick={handleSaveDraft}
-          className="px-4 py-2 bg-gray-200 rounded"
-          disabled={loading}
-        >
-          下書き保存
-        </button>
-
-        <button
           onClick={handleNext}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
           disabled={loading}
+          className="w-full rounded-xl bg-black py-3 text-white font-semibold sm:ml-auto sm:w-auto sm:px-6"
         >
           次へ
         </button>
       </div>
-    </div>
+    </main>
   );
 }

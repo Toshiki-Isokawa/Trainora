@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { InputField } from "../InputField";
 
 /**
  * First-time onboarding (create profile)
@@ -165,71 +166,78 @@ export default function RegistrationCreate() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">
-        アカウント情報 — 基本情報
-      </h2>
+    <main className="max-w-xl mx-auto px-4 py-6 space-y-6">
+      {/* Title */}
+      <header className="space-y-1">
+        <h2 className="text-xl font-semibold">
+          アカウント情報 — 基本情報
+        </h2>
+        <p className="text-sm text-gray-500">
+          基本情報を入力してください
+        </p>
+      </header>
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
+        <div className="rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800">
           {error}
         </div>
       )}
 
       {/* Profile image */}
-      <div className="mb-4">
-        <label className="block mb-1">プロフィール画像</label>
-        <div className="flex items-center gap-4">
-          <div className="w-24 h-24 bg-gray-100 rounded-full overflow-hidden flex items-center justify-center">
-            {imagePreview ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={imagePreview}
-                alt="preview"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-sm text-gray-500">No Image</span>
-            )}
-          </div>
+      <section className="flex flex-col items-center gap-3">
+        <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+          {imagePreview ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={imagePreview}
+              alt="preview"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-xs text-gray-400">
+              No Image
+            </span>
+          )}
+        </div>
 
+        <label className="text-sm font-medium text-blue-600 cursor-pointer">
+          画像を選択
           <input
             type="file"
             accept="image/*"
             onChange={(e) =>
               setImageFile(e.target.files?.[0] ?? null)
             }
+            className="hidden"
           />
-        </div>
-      </div>
+        </label>
+      </section>
 
       {/* Form */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <label className="block mb-1">*名前</label>
+      <section className="space-y-4">
+        <InputField label="*名前">
           <input
-            className="w-full border rounded p-2"
+            className="input"
             value={draft.name}
             onChange={(e) => update({ name: e.target.value })}
           />
-        </div>
+        </InputField>
 
-        <div>
-          <label className="block mb-1">*生年月日</label>
+        <InputField label="*生年月日">
           <input
             type="date"
-            className="w-full border rounded p-2"
+            className="input"
             value={draft.birthDate}
             onChange={(e) =>
               update({ birthDate: e.target.value })
             }
           />
-        </div>
+        </InputField>
 
-        <div>
-          <label className="block mb-1">*性別</label>
+        <InputField label="*性別">
           <select
-            className="w-full border rounded p-2"
+            className="input"
             value={draft.gender}
             onChange={(e) =>
               update({
@@ -242,61 +250,66 @@ export default function RegistrationCreate() {
             <option value="female">女性</option>
             <option value="other">その他</option>
           </select>
-        </div>
+        </InputField>
 
-        <div>
-          <label className="block mb-1">*身長 (cm)</label>
-          <input
-            className="w-full border rounded p-2"
-            inputMode="numeric"
-            value={draft.height}
-            onChange={(e) => update({ height: e.target.value })}
-          />
-        </div>
+        {/* Two columns only on md+ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <InputField label="*身長 (cm)">
+            <input
+              className="input"
+              inputMode="numeric"
+              value={draft.height}
+              onChange={(e) =>
+                update({ height: e.target.value })
+              }
+            />
+          </InputField>
 
-        <div>
-          <label className="block mb-1">*体重 (kg)</label>
-          <input
-            className="w-full border rounded p-2"
-            inputMode="numeric"
-            value={draft.weight}
-            onChange={(e) => update({ weight: e.target.value })}
-          />
-        </div>
+          <InputField label="*体重 (kg)">
+            <input
+              className="input"
+              inputMode="numeric"
+              value={draft.weight}
+              onChange={(e) =>
+                update({ weight: e.target.value })
+              }
+            />
+          </InputField>
 
-        <div>
-          <label className="block mb-1">体脂肪率 (%)</label>
-          <input
-            className="w-full border rounded p-2"
-            inputMode="numeric"
-            value={draft.bodyFat}
-            onChange={(e) => update({ bodyFat: e.target.value })}
-          />
-        </div>
+          <InputField label="体脂肪率 (%)">
+            <input
+              className="input"
+              inputMode="numeric"
+              value={draft.bodyFat}
+              onChange={(e) =>
+                update({ bodyFat: e.target.value })
+              }
+            />
+          </InputField>
 
-        <div>
-          <label className="block mb-1">筋肉量 (kg)</label>
-          <input
-            className="w-full border rounded p-2"
-            inputMode="numeric"
-            value={draft.muscleMass}
-            onChange={(e) =>
-              update({ muscleMass: e.target.value })
-            }
-          />
+          <InputField label="筋肉量 (kg)">
+            <input
+              className="input"
+              inputMode="numeric"
+              value={draft.muscleMass}
+              onChange={(e) =>
+                update({ muscleMass: e.target.value })
+              }
+            />
+          </InputField>
         </div>
-      </div>
+      </section>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-6">
-         <button
+      <div className="pt-4">
+        <button
           onClick={handleNext}
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="w-full rounded-xl bg-black py-3 text-white font-semibold disabled:opacity-50"
         >
           {loading ? "保存中..." : "次へ"}
         </button>
       </div>
-    </div>
+    </main>
   );
 }

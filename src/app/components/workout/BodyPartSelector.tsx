@@ -31,10 +31,6 @@ export default function BodyPartSelector({ selected, onChange }: Props) {
 
   return (
     <div className="space-y-2">
-      <h2 className="text-sm font-semibold text-gray-600">
-        トレーニング部位
-      </h2>
-
       <div className="flex flex-wrap gap-2">
         {BODY_PARTS.map((part) => {
           const active = selected.includes(part.key);
@@ -46,10 +42,10 @@ export default function BodyPartSelector({ selected, onChange }: Props) {
               onClick={() => toggle(part.key)}
               className={`
                 px-4 py-2 rounded-full text-sm font-medium
-                transition
+                transition-all
                 ${
                   active
-                    ? "bg-blue-600 text-white"
+                    ? "bg-blue-600 text-white ring-2 ring-blue-200"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }
               `}

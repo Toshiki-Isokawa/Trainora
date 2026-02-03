@@ -96,55 +96,62 @@ export default function WorkoutRecordPage() {
   };
 
   return (
-    <main className="max-w-xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold">
-          {mode === "edit"
+    <main className="mx-auto max-w-md px-4 py-6 space-y-6">
+        {/* Header */}
+        <header className="space-y-1">
+        <h1 className="text-lg font-semibold">
+            {mode === "edit"
             ? "トレーニング記録を編集"
             : "トレーニング記録"}
         </h1>
-        <p className="text-sm text-gray-500">{date}</p>
-      </div>
+        <p className="text-xs text-gray-500">{date}</p>
+        </header>
 
-      {/* Body Parts */}
-      <BodyPartSelector
-        selected={bodyParts}
-        onChange={setBodyParts}
-      />
+        {/* Body Parts */}
+        <section className="space-y-2">
+        <h2 className="text-sm font-medium text-gray-700">
+            鍛えた部位
+        </h2>
+        <BodyPartSelector
+            selected={bodyParts}
+            onChange={setBodyParts}
+        />
+        </section>
 
-      {/* Workout Cards */}
-      <div className="space-y-4">
+        {/* Workout Cards */}
+        <section className="space-y-3">
         {workouts.map((workout, index) => (
-          <WorkoutCard
+            <WorkoutCard
             key={index}
             workout={workout}
-            onChange={(updated) => updateWorkout(index, updated)}
+            onChange={(updated) =>
+                updateWorkout(index, updated)
+            }
             onDelete={() => removeWorkout(index)}
             />
         ))}
-      </div>
+        </section>
 
-      {/* Add Workout */}
-      <button
+        {/* Add Workout */}
+        <button
         onClick={addWorkout}
-        className="w-full border rounded-lg py-2 text-sm font-medium"
-      >
+        className="w-full rounded-xl border border-dashed py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+        >
         ＋ 種目を追加
-      </button>
+        </button>
 
-      {/* Save */}
-      <button
+        {/* Save */}
+        <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full bg-black text-white rounded-lg py-3 font-semibold disabled:opacity-50"
-      >
+        className="w-full rounded-2xl bg-black py-4 text-base font-semibold text-white disabled:opacity-50"
+        >
         {saving
-          ? "保存中..."
-          : mode === "edit"
-          ? "更新する"
-          : "保存する"}
-      </button>
+            ? "保存中..."
+            : mode === "edit"
+            ? "更新する"
+            : "保存する"}
+        </button>
     </main>
-  );
+    );
 }

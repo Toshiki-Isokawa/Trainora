@@ -60,58 +60,95 @@ export default function GoalCreate() {
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-2 rounded-lg border ${
-        active ? "border-blue-600 bg-blue-50" : "border-gray-300 bg-white"
-      }`}
+      className={`rounded-xl border px-4 py-4 text-left text-sm font-medium transition
+        ${
+          active
+            ? "border-black bg-black text-white"
+            : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+        }`}
     >
       {children}
     </button>
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">目標設定</h2>
+    <main className="max-w-xl mx-auto px-4 py-6 space-y-8">
+      {/* Title */}
+      <header className="space-y-1">
+        <h2 className="text-xl font-semibold">目標設定</h2>
+        <p className="text-sm text-gray-500">
+          あなたのゴールを教えてください
+        </p>
+      </header>
 
       {error && (
-        <div className="bg-red-100 text-red-800 p-2 rounded mb-4">{error}</div>
+        <div className="rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800">
+          {error}
+        </div>
       )}
 
-      {/* Goal Type */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">どのような目標ですか？</label>
-        <div className="flex flex-col gap-3">
-          <OptionButton active={draft.goalType === "gain_both"} onClick={() => update({ goalType: "gain_both" })}>
+      {/* Goal type */}
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
+          どのような目標ですか？
+        </label>
+
+        <div className="grid grid-cols-1 gap-3">
+          <OptionButton
+            active={draft.goalType === "gain_both"}
+            onClick={() => update({ goalType: "gain_both" })}
+          >
             体重と筋肉量を増やしたい
           </OptionButton>
-          <OptionButton active={draft.goalType === "gain_muscle"} onClick={() => update({ goalType: "gain_muscle" })}>
+
+          <OptionButton
+            active={draft.goalType === "gain_muscle"}
+            onClick={() => update({ goalType: "gain_muscle" })}
+          >
             筋肉量を増やしたい
           </OptionButton>
-          <OptionButton active={draft.goalType === "healthy_body"} onClick={() => update({ goalType: "healthy_body" })}>
+
+          <OptionButton
+            active={draft.goalType === "healthy_body"}
+            onClick={() => update({ goalType: "healthy_body" })}
+          >
             健康的な身体を作りたい
           </OptionButton>
-          <OptionButton active={draft.goalType === "lose_fat"} onClick={() => update({ goalType: "lose_fat" })}>
+
+          <OptionButton
+            active={draft.goalType === "lose_fat"}
+            onClick={() => update({ goalType: "lose_fat" })}
+          >
             体脂肪を落としたい
           </OptionButton>
         </div>
       </section>
 
       {/* Duration */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">期間</label>
-        <div className="flex gap-3 flex-wrap">
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
+          期間
+        </label>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {["3-4", "5-6", "6-7", "7plus"].map((d) => (
-            <OptionButton key={d} active={draft.duration === d} onClick={() => update({ duration: d as any })}>
+            <OptionButton
+              key={d}
+              active={draft.duration === d}
+              onClick={() => update({ duration: d as any })}
+            >
               {d === "7plus" ? "7ヶ月以上" : `${d}ヶ月`}
             </OptionButton>
           ))}
         </div>
       </section>
 
-      <div className="flex gap-3 mt-6">
+      {/* Actions */}
+      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
         <button
           onClick={() => persistAndGo("/onboarding/activity")}
-          className="px-4 py-2 bg-white border rounded"
           disabled={loading}
+          className="w-full rounded-xl border py-3 text-sm font-medium sm:w-auto sm:px-5"
         >
           戻る
         </button>
@@ -122,12 +159,12 @@ export default function GoalCreate() {
             if (v) return setError(v);
             persistAndGo("/onboarding/summary");
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
           disabled={loading}
+          className="w-full rounded-xl bg-black py-3 text-white font-semibold sm:ml-auto sm:w-auto sm:px-6"
         >
           次へ
         </button>
       </div>
-    </div>
+    </main>
   );
 }

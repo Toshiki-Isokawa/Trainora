@@ -2,13 +2,39 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Dumbbell, MoveVertical, ArrowUp, Footprints, Armchair } from "lucide-react";
 import ConfirmModal from "./ConfirmModal";
 import dayjs from "dayjs";
 
 interface Props {
   userId: string;
 }
+
+const BODY_PART_META: Record<
+  string,
+  { label: string; Icon: React.ComponentType<{ size?: number }> }
+> = {
+  chest: {
+    label: "胸",
+    Icon: Dumbbell,
+  },
+  back: {
+    label: "背中",
+    Icon: MoveVertical,
+  },
+  shoulder: {
+    label: "肩",
+    Icon: ArrowUp,
+  },
+  arm: {
+    label: "腕",
+    Icon: Armchair,
+  },
+  leg: {
+    label: "脚",
+    Icon: Footprints,
+  },
+};
 
 export default function WorkoutCalendar({ userId }: Props) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
@@ -182,12 +208,25 @@ export default function WorkoutCalendar({ userId }: Props) {
                     key={w.workoutId}
                     className="text-sm text-gray-700 space-y-1"
                     >
-                    {/* Body parts */}
                     <div className="flex items-center justify-between">
-                        <div className="font-medium text-gray-800">
-                            {w.bodyParts.join(" / ")}
+                        {/* Body parts with icons */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {w.bodyParts.map((part: string) => {
+                                const meta = BODY_PART_META[part];
+                                if (!meta) return null;
+                                const { label, Icon } = meta;
+                                return (
+                                    <div
+                                    key={part}
+                                    className="flex items-center gap-1 px-2 py-1 rounded-md bg-white text-gray-800 text-sm"
+                                    >
+                                    <Icon size={14} />
+                                    <span>{label}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
-
+                        {/* Delete */}
                         <button
                             onClick={() => setDeleteTarget(w)}
                             className="text-gray-400 hover:text-red-500 transition"
@@ -196,7 +235,7 @@ export default function WorkoutCalendar({ userId }: Props) {
                             <Trash2 size={18} />
                         </button>
                     </div>
-
+                    
                     {/* Workouts */}
                     <div className="space-y-1 pl-2">
                         {w.workouts.map((ex: any, idx: number) => (

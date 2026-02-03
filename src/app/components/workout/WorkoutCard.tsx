@@ -30,7 +30,7 @@ export default function WorkoutCard({
       menu: value,
     });
   };
-    
+
   const updateSet = (
     index: number,
     field: "weight" | "reps",
@@ -58,89 +58,100 @@ export default function WorkoutCard({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-4 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="bg-white rounded-2xl border shadow-sm p-4 space-y-4">
+        {/* Header */}
+        <div className="flex items-center gap-3">
         <input
-          type="text"
-          placeholder="種目名（例：ベンチプレス）"
-          value={workout.menu}
-          onChange={(e) => updateMenu(e.target.value)}
-          className="flex-1 font-semibold text-gray-800 border-b focus:outline-none focus:border-blue-500"
+            type="text"
+            placeholder="種目名（例：ベンチプレス）"
+            value={workout.menu}
+            onChange={(e) => updateMenu(e.target.value)}
+            className="
+            flex-1 text-base font-semibold text-gray-800
+            border-b border-gray-200
+            focus:outline-none focus:border-blue-500
+            pb-1
+            "
         />
-        <button
-          onClick={onDelete}
-          className="text-gray-400 hover:text-red-500"
-        >
-          <Trash2 size={18} />
-        </button>
-      </div>
 
-      {/* Sets */}
-      <div className="space-y-3">
+        <button
+            onClick={onDelete}
+            className="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+        >
+            <Trash2 size={18} />
+        </button>
+        </div>
+
+        {/* Sets */}
+        <div className="space-y-3">
         {workout.sets.map((set, index) => (
-          <div
+            <div
             key={index}
             className="flex items-center gap-2"
-          >
-            <span className="w-14 text-sm text-gray-500">
-              {index + 1} セット
+            >
+            <span className="w-12 text-xs text-gray-500 shrink-0">
+                {index + 1} セット
             </span>
 
             <input
-              type="number"
-              placeholder="kg"
-              value={set.weight}
-              onChange={(e) =>
+                type="number"
+                placeholder="kg"
+                value={set.weight}
+                onChange={(e) =>
                 updateSet(
-                  index,
-                  "weight",
-                  e.target.value === ""
+                    index,
+                    "weight",
+                    e.target.value === ""
                     ? ""
                     : Number(e.target.value)
                 )
-              }
-              className="w-20 border rounded-md px-2 py-1 text-sm"
+                }
+                className="flex-1 min-w-[70px] border rounded-lg px-3 py-2 text-sm"
             />
 
-            <span className="text-sm text-gray-500">×</span>
+            <span className="text-sm text-gray-400">×</span>
 
             <input
-              type="number"
-              placeholder="回"
-              value={set.reps}
-              onChange={(e) =>
+                type="number"
+                placeholder="回"
+                value={set.reps}
+                onChange={(e) =>
                 updateSet(
-                  index,
-                  "reps",
-                  e.target.value === ""
+                    index,
+                    "reps",
+                    e.target.value === ""
                     ? ""
                     : Number(e.target.value)
                 )
-              }
-              className="w-20 border rounded-md px-2 py-1 text-sm"
+                }
+                className="flex-1 min-w-[70px] border rounded-lg px-3 py-2 text-sm"
             />
 
             {workout.sets.length > 1 && (
-              <button
+                <button
                 onClick={() => removeSet(index)}
-                className="ml-1 text-gray-400 hover:text-red-500"
-              >
+                className="p-2 text-gray-400 hover:text-red-500 transition"
+                >
                 <Trash2 size={14} />
-              </button>
+                </button>
             )}
-          </div>
+            </div>
         ))}
-      </div>
+        </div>
 
-      {/* Add Set */}
-      <button
+        {/* Add Set */}
+        <button
         onClick={addSet}
-        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
-      >
+        className="
+            flex items-center justify-center gap-1
+            w-full rounded-lg border border-dashed
+            py-2 text-sm font-medium text-blue-600
+            hover:bg-blue-50 transition
+        "
+        >
         <Plus size={16} />
         セットを追加
-      </button>
+        </button>
     </div>
-  );
+    );
 }

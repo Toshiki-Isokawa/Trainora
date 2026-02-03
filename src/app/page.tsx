@@ -28,7 +28,7 @@ export default function Home() {
   if (showSplash) {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
-        <h1 className="text-5xl font-bold text-white animate-pulse">
+        <h1 className="text-4xl sm:text-5xl font-bold text-white animate-pulse">
           Trainora
         </h1>
       </div>
@@ -36,7 +36,11 @@ export default function Home() {
   }
 
   if (status === "loading") {
-    return <div className="flex justify-center mt-20">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
   }
 
   // ============================
@@ -46,15 +50,18 @@ export default function Home() {
     return (
       <main className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-4xl font-bold">Trainora</h1>
-        <p className="mt-4 text-lg text-gray-600">最高の人生を作るトレーニングアプリ</p>
+        <p className="mt-3 text-center text-gray-600 text-sm leading-relaxed">
+          最高の人生を作る<br />
+          トレーニングアプリ
+        </p>
 
-        <div className="mt-8 flex gap-4">
+        <div className="mt-10 w-full max-w-sm space-y-3">
           <button 
             onClick={() => 
               signIn("cognito", { 
                 callbackUrl: redirectAfter
               })}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition"
           >
             ログイン
           </button>
@@ -67,7 +74,7 @@ export default function Home() {
                 },
               })
             }
-            className="px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300"
+            className="w-full py-3 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition"
           >
             新規登録
           </button>

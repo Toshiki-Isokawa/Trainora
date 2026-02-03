@@ -54,31 +54,40 @@ export default function GoalEdit({ initialGoal }: { initialGoal: GoalDraft }) {
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-2 rounded-lg border ${
-        active ? "border-blue-600 bg-blue-50" : "border-gray-300 bg-white"
-      }`}
+      className={`rounded-xl border px-4 py-4 text-left text-sm font-medium transition
+        ${
+          active
+            ? "border-black bg-black text-white"
+            : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+        }`}
     >
       {children}
     </button>
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">目標設定</h2>
+    <main className="max-w-xl mx-auto px-4 py-6 space-y-8">
+      {/* Title */}
+      <header className="space-y-1">
+        <h2 className="text-xl font-semibold">目標設定</h2>
+        <p className="text-sm text-gray-500">
+          あなたのゴールを教えてください
+        </p>
+      </header>
 
       {error && (
-        <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
+        <div className="rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800">
           {error}
         </div>
       )}
 
-      {/* Goal Type */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">
+      {/* Goal type */}
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
           どのような目標ですか？
         </label>
 
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <OptionButton
             active={draft.goalType === "gain_both"}
             onClick={() => update({ goalType: "gain_both" })}
@@ -110,48 +119,30 @@ export default function GoalEdit({ initialGoal }: { initialGoal: GoalDraft }) {
       </section>
 
       {/* Duration */}
-      <section className="mb-6">
-        <label className="block mb-2 font-medium">
-          どれくらいの期間で達成したいですか？
+      <section className="space-y-3">
+        <label className="block text-sm font-medium">
+          期間
         </label>
 
-        <div className="flex gap-3 flex-wrap">
-          <OptionButton
-            active={draft.duration === "3-4"}
-            onClick={() => update({ duration: "3-4" })}
-          >
-            3〜4ヶ月
-          </OptionButton>
-
-          <OptionButton
-            active={draft.duration === "5-6"}
-            onClick={() => update({ duration: "5-6" })}
-          >
-            5〜6ヶ月
-          </OptionButton>
-
-          <OptionButton
-            active={draft.duration === "6-7"}
-            onClick={() => update({ duration: "6-7" })}
-          >
-            6〜7ヶ月
-          </OptionButton>
-
-          <OptionButton
-            active={draft.duration === "7plus"}
-            onClick={() => update({ duration: "7plus" })}
-          >
-            7ヶ月以上
-          </OptionButton>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {["3-4", "5-6", "6-7", "7plus"].map((d) => (
+            <OptionButton
+              key={d}
+              active={draft.duration === d}
+              onClick={() => update({ duration: d as any })}
+            >
+              {d === "7plus" ? "7ヶ月以上" : `${d}ヶ月`}
+            </OptionButton>
+          ))}
         </div>
       </section>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-6">
+      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
         <button
           onClick={() => persistAndGo("/onboarding/activity")}
-          className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
           disabled={loading}
+          className="w-full rounded-xl border py-3 text-sm font-medium sm:w-auto sm:px-5"
         >
           戻る
         </button>
@@ -165,12 +156,12 @@ export default function GoalEdit({ initialGoal }: { initialGoal: GoalDraft }) {
             }
             persistAndGo("/onboarding/summary");
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           disabled={loading}
+          className="w-full rounded-xl bg-black py-3 text-white font-semibold sm:ml-auto sm:w-auto sm:px-6"
         >
           次へ
         </button>
       </div>
-    </div>
+    </main>
   );
 }
